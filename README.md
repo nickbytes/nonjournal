@@ -2,6 +2,8 @@
 
 my journaling "software"
 
+![example](./example.gif)
+
 ## Getting Started
 
 1. Clone the repo
