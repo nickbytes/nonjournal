@@ -4,6 +4,7 @@ const moment = require("moment");
 const _ = require("underscore.string");
 const yaml = require("js-yaml");
 const fs = require("fs");
+const ncp = require("copy-paste");
 
 prompt.start();
 prompt.get(["title"], (err, result) => {
@@ -13,7 +14,7 @@ prompt.get(["title"], (err, result) => {
   )}`;
   mkdirp.sync(dir);
 
-  let postFileStr = "---\n";
+  const postFileStr = "---\n";
 
   const frontmatter = {
     title: result.title,
@@ -24,9 +25,21 @@ prompt.get(["title"], (err, result) => {
   postFileStr += yaml.safeDump(frontmatter);
   postFileStr += "---\n";
 
-  fs.writeFileSync(`${dir}/index.md`, postFileStr, {
+  const fileContents = `${postFileStr}${yaml.safeDump(
+    frontmatter
+  )}${postFileStr}`;
+
+  fs.writeFileSync(`${dir}/index.md`, fileContents, {
     encoding: "utf-8"
   });
+
+  ncp.copy(`${dir}/index.md`, () => {
+    console.log("copied to clipboard");
+  });
+
+  if (err) {
+    console.log("Error:", err);
+  }
 
   return console.log(dir);
 });
