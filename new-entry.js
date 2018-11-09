@@ -9,12 +9,14 @@ const ncp = require("copy-paste");
 prompt.start();
 prompt.get(["title"], (err, result) => {
   "use strict";
+
   const dir = `./entries/${moment().format("YYYY-MM-DD")}-${_.slugify(
     result.title
   )}`;
+
   mkdirp.sync(dir);
 
-  const postFileStr = "---\n";
+  const stringSeparator = "---\n";
 
   const frontmatter = {
     title: result.title,
@@ -22,14 +24,11 @@ prompt.get(["title"], (err, result) => {
     layout: "post"
   };
 
-  postFileStr += yaml.safeDump(frontmatter);
-  postFileStr += "---\n";
-
-  const fileContents = `${postFileStr}${yaml.safeDump(
+  const postFileString = `${stringSeparator}${yaml.safeDump(
     frontmatter
-  )}${postFileStr}`;
+  )}${stringSeparator}`;
 
-  fs.writeFileSync(`${dir}/index.md`, fileContents, {
+  fs.writeFileSync(`${dir}/index.md`, postFileString, {
     encoding: "utf-8"
   });
 
